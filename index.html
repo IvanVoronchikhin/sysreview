@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Обзор системного программного обеспечения — диски, утилиты, безопасность, Windows" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" />
+  <style>
+/* ============================================================
+   STYLES.CSS — Design System & Global Styles
+   Neumorphic Light Theme
+   ============================================================ */
+
+
+/* --- CSS Custom Properties --- */
+:root {
+  --bg:           #e8ecf1;
+  --bg-dark:      #dde1e7;
+  --bg-light:     #f5f7fa;
+  --surface:      #e8ecf1;
+
+  --shadow-dark:  #c8cdd5;
+  --shadow-light: #ffffff;
+
+  --neu-raised:
+    6px 6px 14px var(--shadow-dark),
+   -6px -6px 14px var(--shadow-light);
+  --neu-raised-sm:
+    3px 3px 8px var(--shadow-dark),
+   -3px -3px 8px var(--shadow-light);
+  --neu-raised-lg:
+    12px 12px 28px var(--shadow-dark),
+   -12px -12px 28px var(--shadow-light);
+  --neu-inset:
+    inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-light);
+  --neu-inset-sm:
+    inset 2px 2px 6px var(--shadow-dark),
+    inset -2px -2px 6px var(--shadow-light);
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --accent:       #5b8dee;
+  --accent-dark:  #3a6fd8;
+  --accent-glow:  rgba(91, 141, 238, 0.22);
+  --text-primary: #2d3748;
+  --text-secondary:#64748b;
+  --text-muted:   #94a3b8;
+  --success:      #48bb78;
+  --warning:      #ed8936;
+  --danger:       #fc8181;
+
+  --radius-sm:    8px;
+  --radius-md:    14px;
+  --radius-lg:    20px;
+  --radius-xl:    28px;
+  --radius-full:  9999px;
+
+  --transition-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base:   280ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:   480ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); line-height: 1.2; color: var(--text-primary); }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.4rem); font-weight: 700; }
+h3 { font-size: clamp(1.15rem, 2.5vw, 1.6rem); font-weight: 600; }
+h4 { font-size: 1.1rem; font-weight: 600; }
+
+p { color: var(--text-secondary); margin-bottom: 1rem; }
+p:last-child { margin-bottom: 0; }
+a { color: var(--accent); text-decoration: none; transition: color var(--transition-fast); }
+a:hover { color: var(--accent-dark); }
+
+/* --- Layout --- */
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.container--narrow { max-width: 860px; }
+.section   { padding: 5rem 0; }
+.section--sm { padding: 3rem 0; }
+
+/* --- Neumorphic helpers --- */
+.neu-raised    { background: var(--surface); box-shadow: var(--neu-raised); border-radius: var(--radius-lg); }
+.neu-raised-sm { background: var(--surface); box-shadow: var(--neu-raised-sm); border-radius: var(--radius-md); }
+.neu-inset     { background: var(--surface); box-shadow: var(--neu-inset); border-radius: var(--radius-md); }
+
+/* --- Page Transition --- */
+.page-transition-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+  pointer-events: none; opacity: 0; transition: opacity 300ms ease;
+}
+.page-transition-overlay.active { opacity: 1; pointer-events: all; }
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--shadow-dark); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+::selection { background: var(--accent-glow); color: var(--accent-dark); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+/* --- Keyframes --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes rotateGrad {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Scroll Reveal --- */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 100ms; }
+.reveal-delay-2 { transition-delay: 200ms; }
+.reveal-delay-3 { transition-delay: 300ms; }
+.reveal-delay-4 { transition-delay: 400ms; }
+
+/* --- Grids --- */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.75rem; }
+
+/* --- Utilities --- */
+.flex         { display: flex; }
+.flex-center  { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.text-center  { text-align: center; }
+.text-accent  { color: var(--accent); }
+.text-muted   { color: var(--text-muted); }
+.text-sm      { font-size: 0.875rem; }
+.text-xs      { font-size: 0.75rem; }
+.font-display { font-family: var(--font-display); }
+
+/* --- Tag --- */
+.tag {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.3rem 0.85rem; border-radius: var(--radius-full);
+  font-size: 0.75rem; font-weight: 600; font-family: var(--font-display);
+  letter-spacing: 0.04em; background: var(--surface);
+  box-shadow: var(--neu-inset-sm); color: var(--text-secondary);
+}
+.tag--accent {
+  background: linear-gradient(135deg, rgba(91,141,238,0.15), rgba(91,141,238,0.06));
+  color: var(--accent); box-shadow: none;
+}
+
+/* --- Divider --- */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--shadow-dark), transparent);
+  margin: 2rem 0; border: none;
+}
+
+/* --- Image Placeholder --- */
+.img-placeholder {
+  width: 100%; background: var(--bg-dark); box-shadow: var(--neu-inset);
+  border-radius: var(--radius-md); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.5rem;
+  color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-display);
+  aspect-ratio: 16/9; position: relative; overflow: hidden;
+}
+.img-placeholder::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 10px,
+    rgba(0,0,0,0.015) 10px, rgba(0,0,0,0.015) 20px
+  );
+}
+.img-placeholder svg { width: 36px; height: 36px; opacity: 0.3; }
+.img-placeholder .img-caption {
+  position: absolute; bottom: 0.75rem; right: 1rem;
+  font-size: 0.7rem; color: var(--text-muted); opacity: 0.7;
+}
+
+/* --- Back Button --- */
+.btn-back {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.25rem; border-radius: var(--radius-full);
+  background: var(--surface); box-shadow: var(--neu-raised-sm);
+  color: var(--text-secondary); font-family: var(--font-display);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  border: none; transition: all var(--transition-base);
+  text-decoration: none;
+}
+.btn-back:hover {
+  box-shadow: var(--neu-raised);
+  color: var(--accent);
+  transform: translateX(-3px);
+}
+.btn-back:active { box-shadow: var(--neu-inset-sm); transform: translateX(0); }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .container { padding: 0 1.25rem; }
+  .section   { padding: 3.5rem 0; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+/* ============================================================
+   COMPONENTS.CSS — Reusable UI Components
+   Neumorphic System
+   ============================================================ */
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  padding: 1rem 0;
+  transition: box-shadow var(--transition-base);
+}
+
+.navbar.scrolled {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.navbar__logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.navbar__logo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 3px 3px 8px rgba(91,141,238,0.3), -1px -1px 4px rgba(255,255,255,0.8);
+}
+
+.navbar__logo-icon svg { width: 20px; height: 20px; color: #fff; }
+
+.navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+}
+
+.navbar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.navbar__link:hover {
+  color: var(--accent);
+  background: rgba(91,141,238,0.08);
+}
+
+.navbar__link.active {
+  color: var(--accent);
+  background: var(--surface);
+  box-shadow: var(--neu-inset-sm);
+}
+
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+}
+.navbar__hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 2px;
+  transition: all var(--transition-base);
+}
+
+/* Mobile nav */
+@media (max-width: 768px) {
+  .navbar__hamburger { display: flex; }
+  .navbar__nav {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 1.25rem;
+    right: 1.25rem;
+    background: var(--surface);
+    box-shadow: var(--neu-raised-lg);
+    border-radius: var(--radius-lg);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    gap: 0.25rem;
+    display: none;
+  }
+  .navbar__nav.open { display: flex; }
+  .navbar__link { justify-content: flex-start; border-radius: var(--radius-md); }
+}
+
+/* =========================================================
+   BREADCRUMBS
+   ========================================================= */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1.25rem;
+  background: var(--surface);
+  box-shadow: var(--neu-inset-sm);
+  border-radius: var(--radius-full);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.breadcrumbs__item a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.breadcrumbs__item a:hover { color: var(--accent); }
+
+.breadcrumbs__item--current { color: var(--accent); }
+
+.breadcrumbs__sep {
+  color: var(--shadow-dark);
+  font-size: 0.75rem;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 0 4rem;
+}
+
+.hero__bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+.hero__bg-orb--1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(91,141,238,0.1) 0%, transparent 70%);
+  top: -200px;
+  right: -150px;
+}
+
+.hero__bg-orb--2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(72,187,120,0.07) 0%, transparent 70%);
+  bottom: -100px;
+  left: -100px;
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: var(--neu-inset-sm);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero__eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s ease infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+.hero__title {
+  margin-bottom: 1.5rem;
+}
+
+.hero__title-accent {
+  color: var(--accent);
+  position: relative;
+  display: inline-block;
+}
+
+.hero__title-accent::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  border-radius: var(--radius-full);
+}
+
+.hero__desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero__card-float {
+  width: 100%;
+  max-width: 380px;
+  padding: 2rem;
+  background: var(--surface);
+  box-shadow: var(--neu-raised-lg);
+  border-radius: var(--radius-xl);
+  animation: float 5s ease-in-out infinite;
+}
+
+.hero__card-float-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--shadow-dark);
+}
+
+.hero__card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 3px 3px 10px rgba(91,141,238,0.35), -2px -2px 6px rgba(255,255,255,0.7);
+}
+.hero__card-icon svg { width: 26px; height: 26px; color: #fff; }
+
+.hero__card-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.hero__card-stat:last-child { margin-bottom: 0; }
+.hero__card-stat-label { color: var(--text-muted); }
+.hero__card-stat-value { color: var(--accent); font-size: 0.9rem; }
+
+@media (max-width: 900px) {
+  .hero__grid { grid-template-columns: 1fr; gap: 3rem; }
+  .hero__visual { display: none; }
+  .hero { min-height: auto; }
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-spring);
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  background: rgba(255,255,255,0.15);
+}
+.btn:hover::after { opacity: 1; }
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #fff;
+  box-shadow: 4px 4px 12px rgba(91,141,238,0.4), -2px -2px 6px rgba(255,255,255,0.7);
+}
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 18px rgba(91,141,238,0.45), -3px -3px 8px rgba(255,255,255,0.75);
+}
+.btn--primary:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 6px rgba(91,141,238,0.35);
+}
+
+.btn--secondary {
+  background: var(--surface);
+  color: var(--text-secondary);
+  box-shadow: var(--neu-raised-sm);
+}
+.btn--secondary:hover {
+  box-shadow: var(--neu-raised);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+.btn--secondary:active {
+  box-shadow: var(--neu-inset-sm);
+  transform: translateY(0);
+}
+
+.btn--sm {
+  padding: 0.5rem 1.1rem;
+  font-size: 0.82rem;
+}
+
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* =========================================================
+   SECTION CARDS (homepage)
+   ========================================================= */
+.section-card {
+  padding: 2rem;
+  background: var(--surface);
+  box-shadow: var(--neu-raised);
+  border-radius: var(--radius-xl);
+  transition: all var(--transition-spring);
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.section-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--neu-raised-lg);
+}
+.section-card:hover::before { opacity: 1; }
+
+.section-card__icon {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  background: var(--surface);
+  box-shadow: var(--neu-raised-sm);
+  transition: box-shadow var(--transition-base);
+}
+.section-card:hover .section-card__icon {
+  box-shadow: 4px 4px 12px rgba(91,141,238,0.25), -2px -2px 6px rgba(255,255,255,0.9);
+}
+.section-card__icon svg { width: 26px; height: 26px; color: var(--accent); }
+
+.section-card__tag {
+  margin-bottom: 0.75rem;
+}
+
+.section-card__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.section-card__desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.section-card__arrow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  transition: gap var(--transition-spring);
+}
+.section-card:hover .section-card__arrow { gap: 0.7rem; }
+.section-card__arrow svg { width: 14px; height: 14px; }
+
+/* =========================================================
+   PAGE HERO (inner pages)
+   ========================================================= */
+.page-hero {
+  padding: 4rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero__bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(91,141,238,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.page-hero__content { position: relative; z-index: 1; }
+
+.page-hero__nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.page-hero__title {
+  margin-bottom: 1rem;
+}
+
+.page-hero__desc {
+  font-size: 1.05rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   LOCAL NAV (section TOC)
+   ========================================================= */
+.local-nav {
+  padding: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--neu-raised);
+  border-radius: var(--radius-xl);
+  margin-bottom: 3rem;
+}
+
+.local-nav__title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.local-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.local-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: var(--surface);
+  box-shadow: var(--neu-raised-sm);
+  transition: all var(--transition-base);
+}
+.local-nav__link:hover {
+  color: var(--accent);
+  box-shadow: 2px 2px 6px rgba(91,141,238,0.2), -2px -2px 5px var(--shadow-light);
+}
+.local-nav__link.active {
+  color: var(--accent);
+  box-shadow: var(--neu-inset-sm);
+}
+
+/* =========================================================
+   CONTENT SECTION BLOCK
+   ========================================================= */
+.content-block {
+  padding: 2.5rem;
+  background: var(--surface);
+  box-shadow: var(--neu-raised);
+  border-radius: var(--radius-xl);
+  margin-bottom: 2rem;
+}
+
+.content-block__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--bg-dark);
+}
+
+.content-block__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 3px 3px 8px rgba(91,141,238,0.3), -2px -2px 5px rgba(255,255,255,0.7);
+}
+.content-block__icon svg { width: 22px; height: 22px; color: #fff; }
+
+.content-block__title { margin-bottom: 0.25rem; }
+.content-block__subtitle { font-size: 0.85rem; color: var(--text-muted); }
+
+/* =========================================================
+   INFO GRID (pros/cons, stats)
+   ========================================================= */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.info-item {
+  padding: 1.25rem;
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  border-radius: var(--radius-md);
+}
+
+.info-item__label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.info-item--pros .info-item__label { color: var(--success); }
+.info-item--cons .info-item__label { color: var(--danger); }
+
+.info-item__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item__list li {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+
+.info-item__list li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.4em;
+}
+.info-item--pros li::before { background: var(--success); }
+.info-item--cons li::before { background: var(--danger); }
+
+@media (max-width: 600px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .content-block { padding: 1.5rem; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer {
+  padding: 3rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid var(--shadow-dark);
+}
+
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer__logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.footer__copy {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.footer__links {
+  display: flex;
+  gap: 1.25rem;
+  list-style: none;
+}
+
+.footer__links a {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.footer__links a:hover { color: var(--accent); }
+
+/* =========================================================
+   STATS ROW
+   ========================================================= */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.25rem;
+  margin: 2.5rem 0;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  text-align: center;
+  background: var(--surface);
+  box-shadow: var(--neu-raised-sm);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-spring);
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--neu-raised);
+}
+
+.stat-card__num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.stat-card__label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+/* ============================================================
+   ACCORDION.CSS — Accordion Component Styles
+   ============================================================ */
+
+/* ── Container ── */
+[data-accordion] {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Item ── */
+.accordion-item {
+  background: var(--surface);
+  box-shadow: var(--neu-raised);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base);
+}
+
+.accordion-item.is-open {
+  box-shadow: var(--neu-raised-lg);
+}
+
+/* ── Trigger ── */
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.75rem 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: background var(--transition-fast);
+}
+
+.accordion-trigger:hover {
+  background: rgba(91, 141, 238, 0.03);
+}
+
+.accordion-item.is-open .accordion-trigger {
+  border-bottom: 1px solid var(--bg-dark);
+}
+
+/* App icon */
+.accordion-app-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: box-shadow var(--transition-spring);
+}
+
+.accordion-item.is-open .accordion-app-icon {
+  box-shadow: 4px 4px 14px rgba(91,141,238,0.3), -2px -2px 6px rgba(255,255,255,0.8);
+}
+
+.accordion-app-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Title block */
+.accordion-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.accordion-app-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+  line-height: 1.2;
+}
+
+.accordion-app-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.accordion-app-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Tags strip */
+.accordion-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+/* Chevron */
+.accordion-chevron {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--neu-raised-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-spring);
+}
+
+.accordion-chevron svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform var(--transition-spring), color var(--transition-base);
+}
+
+.accordion-item.is-open .accordion-chevron {
+  box-shadow: var(--neu-inset-sm);
+  background: var(--bg-dark);
+}
+
+.accordion-item.is-open .accordion-chevron svg {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+/* ── Body ── */
+.accordion-body {
+  height: 0;
+  overflow: hidden;
+  transition: height 360ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-body-inner {
+  padding: 2rem 2rem 2.25rem;
+}
+
+/* ── Body Sections ── */
+.acc-section {
+  margin-bottom: 2rem;
+}
+.acc-section:last-child { margin-bottom: 0; }
+
+.acc-section-title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.acc-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--shadow-dark), transparent);
+}
+
+/* Manufacturer row */
+.acc-meta-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.acc-meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.acc-meta-chip svg { width: 12px; height: 12px; color: var(--accent); flex-shrink: 0; }
+
+.acc-official-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  background: rgba(91,141,238,0.1);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+.acc-official-link:hover {
+  background: rgba(91,141,238,0.18);
+  transform: translateY(-1px);
+}
+.acc-official-link svg { width: 11px; height: 11px; }
+
+/* Screenshot placeholder inside accordion */
+.acc-screenshot {
+  width: 100%;
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  aspect-ratio: 16/8;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.acc-screenshot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 12px,
+    rgba(0,0,0,0.012) 12px, rgba(0,0,0,0.012) 24px
+  );
+}
+.acc-screenshot svg { width: 36px; height: 36px; opacity: 0.25; }
+.acc-screenshot-caption {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.acc-screenshot-date {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Feature / capability list */
+.acc-feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.65rem;
+}
+
+.acc-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.845rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.acc-feature-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.35em;
+}
+
+/* Experiments list */
+.acc-experiments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  counter-reset: experiment;
+}
+
+.acc-experiment-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--bg-dark);
+  box-shadow: var(--neu-inset-sm);
+  border-radius: var(--radius-md);
+  counter-increment: experiment;
+}
+
+.acc-experiment-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 2px 2px 6px rgba(91,141,238,0.35);
+}
+
+.acc-experiment-content { flex: 1; }
+.acc-experiment-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+.acc-experiment-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Conclusion block */
+.acc-conclusion {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(91,141,238,0.08), rgba(91,141,238,0.03));
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--accent);
+}
+
+.acc-conclusion p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Pros / Cons inside accordion */
+.acc-pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 580px) {
+  .accordion-trigger { padding: 1.25rem; gap: 0.85rem; }
+  .accordion-body-inner { padding: 1.25rem; }
+  .accordion-app-icon { width: 46px; height: 46px; }
+  .accordion-app-icon svg { width: 22px; height: 22px; }
+  .accordion-app-name { font-size: 1.05rem; }
+  .acc-pros-cons { grid-template-columns: 1fr; }
+  .acc-feature-list { grid-template-columns: 1fr; }
+}
+  </style>
+  <title>SysReview — Обзор системного ПО</title>  <style>
+    .features-strip { display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.75rem; }
+    .feature-pill {
+      display:flex; align-items:center; gap:0.4rem; padding:0.45rem 1rem;
+      border-radius:var(--radius-full); background:var(--surface); box-shadow:var(--neu-inset-sm);
+      font-size:0.8rem; font-family:var(--font-display); font-weight:600; color:var(--text-secondary);
+    }
+    .feature-pill-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+
+    .section-heading { display:flex; align-items:center; gap:1.25rem; margin-bottom:0.75rem; }
+    .section-heading::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--shadow-dark), transparent); }
+
+    .cards-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+      gap:1.75rem; margin-top:2.5rem;
+    }
+    .card-featured { grid-column:span 2; }
+    @media (max-width:800px) { .card-featured { grid-column:span 1; } }
+
+    .about-block {
+      padding:3.5rem; background:var(--surface); box-shadow:var(--neu-raised-lg);
+      border-radius:var(--radius-xl); display:grid; grid-template-columns:1fr 1.2fr;
+      gap:3rem; align-items:center;
+    }
+    @media (max-width:700px) { .about-block { grid-template-columns:1fr; padding:2rem; gap:2rem; } }
+
+    .about-accent-bar {
+      width:4px; height:60px; background:linear-gradient(180deg, var(--accent), transparent);
+      border-radius:var(--radius-full); margin-bottom:1.5rem;
+    }
+    .tech-badge {
+      display:inline-flex; align-items:center; gap:0.5rem; padding:0.6rem 1.1rem;
+      border-radius:var(--radius-full); background:var(--bg-dark); box-shadow:var(--neu-inset-sm);
+      font-size:0.8rem; font-family:var(--font-display); font-weight:700;
+      color:var(--text-secondary); margin:0.3rem;
+    }
+    .tech-badge svg { width:14px; height:14px; color:var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar" role="banner">
+  <div class="container">
+    <nav class="navbar__inner" aria-label="Основная навигация">
+      <a href="index.html" class="navbar__logo" aria-label="SysReview — на главную">
+        <div class="navbar__logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+          </svg>
+        </div>
+        SysReview
+      </a>
+
+      <button class="navbar__hamburger" aria-label="Открыть меню" aria-expanded="false" aria-controls="main-nav">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="navbar__nav" id="main-nav" role="list">
+        <li><a href="index.html" class="navbar__link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Главная
+        </a></li>
+        <li><a href="windows.html" class="navbar__link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+          Windows
+        </a></li>
+        <li><a href="disk.html" class="navbar__link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Диски
+        </a></li>
+        <li><a href="disk-tools.html" class="navbar__link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Утилиты
+        </a></li>
+        <li><a href="security.html" class="navbar__link">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Безопасность
+        </a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__bg-orb hero__bg-orb--1" aria-hidden="true"></div>
+  <div class="hero__bg-orb hero__bg-orb--2" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero__grid">
+
+      <div class="hero__content">
+        <div class="hero__eyebrow" aria-hidden="true">
+          <span class="hero__eyebrow-dot"></span>
+          Системное ПО · Обзор
+        </div>
+        <h1 class="hero__title" id="hero-title">
+          Полный гид по<br />
+          <span class="hero__title-accent">системному ПО</span>
+        </h1>
+        <p class="hero__desc">
+          Разметка дисков, файловые системы, утилиты диагностики,
+          инструменты безопасности и обоснование выбора Windows —
+          всё в одном месте.
+        </p>
+        <div class="hero__actions">
+          <a href="windows.html" class="btn btn--primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Начать изучение
+          </a>
+          <a href="#sections" class="btn btn--secondary">Все разделы</a>
+        </div>
+        <div class="features-strip" aria-label="Темы">
+          <span class="feature-pill"><span class="feature-pill-dot"></span>HDD vs SSD</span>
+          <span class="feature-pill"><span class="feature-pill-dot"></span>NTFS / FAT32</span>
+          <span class="feature-pill"><span class="feature-pill-dot"></span>Firewall</span>
+          <span class="feature-pill"><span class="feature-pill-dot"></span>Malwarebytes</span>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="hero__card-float" role="presentation">
+          <div class="hero__card-float-header">
+            <div class="hero__card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+              </svg>
+            </div>
+            <div>
+              <h3 style="font-size:1rem;margin-bottom:.2rem">Системный дашборд</h3>
+              <p style="font-size:.78rem;color:var(--text-muted);margin:0">Обзор компонентов</p>
+            </div>
+          </div>
+          <div class="hero__card-stat">
+            <span class="hero__card-stat-label">Разделов сайта</span>
+            <span class="hero__card-stat-value">4</span>
+          </div>
+          <div class="hero__card-stat">
+            <span class="hero__card-stat-label">Утилит рассмотрено</span>
+            <span class="hero__card-stat-value">6</span>
+          </div>
+          <div class="hero__card-stat">
+            <span class="hero__card-stat-label">Темы: диски</span>
+            <span class="hero__card-stat-value">HDD · SSD · ФС</span>
+          </div>
+          <div class="hero__card-stat">
+            <span class="hero__card-stat-label">Безопасность</span>
+            <span class="hero__card-stat-value">Firewall · AV</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section--sm" aria-label="Статистика">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="stat-card__num" data-count="4">0</div>
+        <div class="stat-card__label">Раздела сайта</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-card__num" data-count="3">0</div>
+        <div class="stat-card__label">Утилиты дисков</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-card__num" data-count="3">0</div>
+        <div class="stat-card__label">Инструмента защиты</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-card__num" data-count="5">0</div>
+        <div class="stat-card__label">Экспериментов на утилиту</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTIONS OVERVIEW -->
+<section class="section" id="sections" aria-labelledby="sections-title">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-heading">
+        <h2 id="sections-title">Разделы</h2>
+      </div>
+      <p style="max-width:520px;color:var(--text-muted);">
+        Каждый раздел — самостоятельный тематический блок с детальным обзором,
+        практическими экспериментами и выводами.
+      </p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Windows featured -->
+      <a href="windows.html" class="section-card card-featured reveal" aria-label="Раздел Windows">
+        <div style="display:flex;align-items:flex-start;gap:1.5rem;flex-wrap:wrap;">
+          <div class="section-card__icon" style="background:linear-gradient(135deg,rgba(91,141,238,.12),rgba(91,141,238,.05));box-shadow:none;width:70px;height:70px;border-radius:var(--radius-lg);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="width:34px;height:34px;color:var(--accent)"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+          </div>
+          <div style="flex:1;min-width:220px;">
+            <span class="tag tag--accent section-card__tag">Операционная система</span>
+            <h3 class="section-card__title">Windows</h3>
+            <p class="section-card__desc">Обоснование выбора Windows как основной ОС. Архитектура, особенности файловой системы, управление ресурсами и экосистема программного обеспечения.</p>
+            <div class="section-card__arrow">Читать обзор <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Disk -->
+      <a href="disk.html" class="section-card reveal reveal-delay-1" aria-label="Раздел Диски">
+        <div class="section-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <span class="tag tag--accent section-card__tag">Хранилища</span>
+        <h3 class="section-card__title">Диски &amp; ФС</h3>
+        <p class="section-card__desc">HDD против SSD, разметка дисков (MBR/GPT), файловые системы NTFS, FAT32, exFAT.</p>
+        <div class="section-card__arrow">Читать обзор <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </a>
+
+      <!-- Disk Tools -->
+      <a href="disk-tools.html" class="section-card reveal reveal-delay-2" aria-label="Утилиты для дисков">
+        <div class="section-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <span class="tag tag--accent section-card__tag">Утилиты</span>
+        <h3 class="section-card__title">Disk Tools</h3>
+        <p class="section-card__desc">CrystalDiskInfo, Victoria, WizTree — диагностика, мониторинг и анализ использования диска.</p>
+        <div class="section-card__arrow">Читать обзор <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </a>
+
+      <!-- Security -->
+      <a href="security.html" class="section-card reveal reveal-delay-3" aria-label="Безопасность">
+        <div class="section-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span class="tag tag--accent section-card__tag">Защита</span>
+        <h3 class="section-card__title">Безопасность</h3>
+        <p class="section-card__desc">Host Firewall, Malwarebytes, ZoneAlarm — защита рабочей станции на всех уровнях.</p>
+        <div class="section-card__arrow">Читать обзор <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section--sm" aria-labelledby="about-title">
+  <div class="container container--narrow">
+    <div class="about-block reveal">
+      <div>
+        <div class="about-accent-bar" aria-hidden="true"></div>
+        <span class="tag tag--accent" style="margin-bottom:1rem;display:inline-flex;">О проекте</span>
+        <h2 id="about-title" style="margin-bottom:1rem;">Что такое<br />SysReview?</h2>
+        <p>Структурированный справочник по системному программному обеспечению. Каждый раздел содержит подробный обзор, историю продукта, практические эксперименты и взвешенные выводы.</p>
+        <p>Цель — дать чёткое понимание инструментов, используемых при обслуживании и настройке Windows-систем.</p>
+        <a href="windows.html" class="btn btn--primary" style="margin-top:1rem;">
+          Начать с Windows
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div>
+        <p style="font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1rem;">Стек и подход</p>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Vanilla JS</span>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>ES6 Modules</span>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Neumorphism</span>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>CSS Animations</span>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Компоненты</span>
+        <span class="tech-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Без фреймворков</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__inner">
+      <a href="index.html" class="footer__logo">SysReview</a>
+      <p class="footer__copy">Обзор системного ПО · Учебный проект</p>
+      <ul class="footer__links" role="list" aria-label="Навигация">
+        <li><a href="windows.html">Windows</a></li>
+        <li><a href="disk.html">Диски</a></li>
+        <li><a href="disk-tools.html">Утилиты</a></li>
+        <li><a href="security.html">Безопасность</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script src="js/bundle.js"></script>
+</body>
+</html>
